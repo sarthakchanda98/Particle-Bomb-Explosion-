@@ -41,6 +41,7 @@ jobs:
 
     # 5. Save the compiled program as an artifact
     - name: Upload Build Artifact
+      uses: actions/upload-artifact@v4
       with:
-        name: particle-bomb-explosion
-        path: particle-bomb-explosion
+        name: linux-particle-explosion
+        path: molecular_simulator
