@@ -1,0 +1,46 @@
+name: Build SDL3 Project
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    # 1. Check out your repository code
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    # 2. Install essential compilation and graphical dependencies
+    - name: Install Build Dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y build-essential cmake ninja-build \
+          libasound2-dev libpulse-dev libaudio-dev libfribidi-dev \
+          libjack-dev libsndio-dev libx11-dev libxext-dev \
+          libxrandr-dev libxcursor-dev libxfixes-dev libxi-dev \
+          libxss-dev libwayland-dev libdecor-0-dev libxkbcommon-dev \
+          libxtst-dev
+
+    # 3. Clone and compile SDL3 from source
+    - name: Build and Install SDL3
+      run: |
+        git clone --depth 1 https://github.com/libsdl-org/SDL.git
+        cd SDL
+        cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
+        cmake --build build
+        sudo cmake --install build
+
+    # 4. Compile your application using your Makefile
+    - name: Compile Application with Makefile
+      run: make
+
+    # 5. Save the compiled program as an artifact
+    - name: Upload Build Artifact
+      with:
+        name: particle-bomb-explosion
+        path: particle-bomb-explosion
