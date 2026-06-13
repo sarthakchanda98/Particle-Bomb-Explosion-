@@ -1,25 +1,26 @@
-# Makefile for Particle Explosion Project (SDL3)
-
+# Compiler definitions
 CXX = g++
-CXXFLAGS = -g -Wall -I/usr/local/include/SDL3
-LDFLAGS = -L/usr/local/lib -lSDL3
+CXXFLAGS = -Wall -Wextra -std=c++17 $(shell pkg-config --cflags sdl3)
+LIBS = $(shell pkg-config --libs sdl3)
 
-SRCS = main.cpp particle.cpp swarm.cpp screen.cpp gradient.cpp
+# Target executable name
+TARGET = molecular_simulator
+
+# List of all source files in your project
+SRCS = main.cpp screen.cpp particle.cpp swarm.cpp
 OBJS = $(SRCS:.cpp=.o)
-TARGET = main
 
+# Default target rule
 all: $(TARGET)
 
+# Link object files together into the final executable
 $(TARGET): $(OBJS)
-	$(CXX) $(CXXFLAGS) -o $(TARGET) $(OBJS) $(LDFLAGS)
+	$(CXX) $(OBJS) -o $(TARGET) $(LIBS)
 
+# Compile each .cpp file into a .o object file
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-run: $(TARGET)
-	./$(TARGET)
-
+# Clean up build files
 clean:
 	rm -f $(OBJS) $(TARGET)
-
-.PHONY: all clean run
